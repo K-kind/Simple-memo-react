@@ -6,6 +6,9 @@ import useSearchMemos from 'hooks/useSearchMemos';
 
 const MEMOS_PER_PAGE = 5;
 
+const getPageFromQueryStr = () =>
+  Number(new URLSearchParams(window.location.search).get('page'));
+
 const MemoPage: VFC = () => {
   const { memos, setMemos, nextId, setNextId } = useMemos();
   const { newMemo, setNewMemo, confirmNewMemo } = useNewMemo(
@@ -21,7 +24,7 @@ const MemoPage: VFC = () => {
 
   const filteredMemos = getFilteredMemos(memos);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(getPageFromQueryStr() || 1);
   const pageCount = useMemo(() => {
     if (filteredMemos.length === 0) return 1;
 
@@ -38,6 +41,20 @@ const MemoPage: VFC = () => {
       setCurrentPage(pageCount);
     }
   }, [pageCount, currentPage]);
+
+  useEffect(() => {
+    const queryString = new URLSearchParams({
+      page: String(currentPage),
+    }).toString();
+    window.history.replaceState(null, '', `?${queryString}`);
+  }, [currentPage]);
+
+  useEffect(() => {
+    const page = getPageFromQueryStr();
+    if (page) {
+      setCurrentPage(Number(page));
+    }
+  }, []);
 
   return (
     <MemoPageComponent
