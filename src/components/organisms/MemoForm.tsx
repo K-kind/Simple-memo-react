@@ -1,16 +1,30 @@
-import { VFC, ChangeEvent, FormEvent, useRef, useCallback } from 'react';
-import Paper from '@mui/material/Paper';
+import {
+  VFC,
+  ChangeEvent,
+  FormEvent,
+  useRef,
+  useCallback,
+  useState,
+} from 'react';
+import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 import { blue } from '@mui/material/colors';
 import ClearableTextField from 'components/molecules/ClearableTextField';
+import { Memo } from 'domains/models/memo';
 
 type Props = {
+  // 新規メモ
   newMemo: string | null;
   setNewMemo: (value: string | null) => void;
   confirmNewMemo: () => void;
-
+  // メモ検索
   setSearchVal: (value: string | null) => void;
+  // メモ削除
+  memos: Memo[];
+  deleteMemo: (id: number) => void;
 };
 
 const MemoForm: VFC<Props> = ({
@@ -18,6 +32,8 @@ const MemoForm: VFC<Props> = ({
   setNewMemo,
   confirmNewMemo,
   setSearchVal,
+  memos,
+  deleteMemo,
 }) => {
   const onNewMemoInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +55,14 @@ const MemoForm: VFC<Props> = ({
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     setSearchVal(searchFieldRef.current!.value);
     e.preventDefault();
+  };
+
+  const [selectedMemo, setSelectedMemo] = useState<Memo | null>(null);
+  const onSubmitDelete = () => {
+    if (selectedMemo == null) return;
+
+    deleteMemo(selectedMemo.id);
+    setSelectedMemo(null);
   };
 
   return (
@@ -73,6 +97,33 @@ const MemoForm: VFC<Props> = ({
             </Button>
           </Stack>
         </form>
+
+        <Stack direction="row">
+          <Autocomplete
+            value={selectedMemo}
+            options={memos}
+            sx={{ flexGrow: 1, backgroundColor: 'white' }}
+            size="small"
+            getOptionLabel={(option) => option.content}
+            renderOption={(props, option) => (
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              <li {...props} key={option.id}>
+                {option.content}
+              </li>
+            )}
+            renderInput={(params) => (
+              <TextField
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...params}
+                variant="outlined"
+              />
+            )}
+            onChange={(_e, value) => setSelectedMemo(value)}
+          />
+          <Button variant="contained" size="medium" onClick={onSubmitDelete}>
+            Del
+          </Button>
+        </Stack>
       </Stack>
     </Paper>
   );

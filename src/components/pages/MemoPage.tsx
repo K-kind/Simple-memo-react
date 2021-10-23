@@ -15,6 +15,8 @@ type Props = {
   // メモ検索
   searchVal: string | null;
   setSearchVal: (value: string | null) => void;
+  // メモ削除
+  deleteMemo: (id: number) => void;
 };
 
 const MemoPage: VFC<Props> = ({
@@ -24,6 +26,7 @@ const MemoPage: VFC<Props> = ({
   confirmNewMemo,
   searchVal,
   setSearchVal,
+  deleteMemo,
 }) => (
   <DefaultLayout>
     <MemoForm
@@ -32,6 +35,8 @@ const MemoPage: VFC<Props> = ({
         setNewMemo,
         confirmNewMemo,
         setSearchVal,
+        memos,
+        deleteMemo,
       }}
     />
     {searchVal && <Box sx={{ pt: 2, pb: 1 }}>「{searchVal}」での検索結果</Box>}

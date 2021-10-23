@@ -42,6 +42,9 @@ const MemoPage: VFC = () => {
   const { memos, setMemos } = useMemos();
   const { newMemo, setNewMemo, confirmNewMemo } = useNewMemo(memos, setMemos);
   const { searchVal, setSearchVal, getFilteredMemos } = useSearchMemo();
+  const deleteMemo = (id: number) => {
+    setMemos(memos.filter((memo) => memo.id !== id));
+  };
 
   return (
     <MemoPageComponent
@@ -52,6 +55,7 @@ const MemoPage: VFC = () => {
         confirmNewMemo,
         searchVal,
         setSearchVal,
+        deleteMemo,
       }}
     />
   );
