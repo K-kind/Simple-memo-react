@@ -1,4 +1,6 @@
-import { VFC, ReactNode } from 'react';
+/** @jsxImportSource @emotion/react */
+import { VFC, ReactNode, memo } from 'react';
+import { css } from '@emotion/react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -9,7 +11,7 @@ type Props = {
   children: ReactNode;
 };
 
-const DefaultLayout: VFC<Props> = ({ children }) => (
+const DefaultLayout: VFC<Props> = memo(({ children }) => (
   <>
     <AppBar position="relative">
       <Toolbar sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -18,7 +20,14 @@ const DefaultLayout: VFC<Props> = ({ children }) => (
         </Typography>
       </Toolbar>
     </AppBar>
-    <Container component="main" maxWidth="sm" sx={{ pt: 8, pb: 6 }}>
+    <Container
+      component="main"
+      maxWidth="sm"
+      css={css`
+        min-height: calc(100vh - 180px);
+      `}
+      sx={{ pt: 8, pb: 6 }}
+    >
       {children}
     </Container>
     <Box sx={{ p: 6 }} component="footer">
@@ -27,6 +36,6 @@ const DefaultLayout: VFC<Props> = ({ children }) => (
       </Typography>
     </Box>
   </>
-);
+));
 
 export default DefaultLayout;
